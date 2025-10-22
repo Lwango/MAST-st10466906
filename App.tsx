@@ -37,3 +37,12 @@ export default function App() {
     </NavigationContainer>
   );
 }
+{/*  
+Kimia, 2025. Moonshot AI – Kimi Chat. [Online] Available at: https://kimi.moonshot.cn
+[Accessed 20 October 2025].
+Google LLC, 2025. Google Search. [Online] Available at: https://www.google.com
+[Accessed 13 October 2025].
+YouTube, 2025. React Native Tutorials. [Online] Available at: https://www.youtube.com
+[Accessed 20 October 2025].
+Burger King Corporation, 2025. Menu & Nutritional Information. [Online] Available at: https://www.burgerking.com
+[Accessed 10 October 2025].*/}
