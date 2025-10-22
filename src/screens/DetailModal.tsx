@@ -1,7 +1,7 @@
  import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
-import { MenuItem } from '../types/MenuItem';
-import colors from '../themes/colors';
+import { MenuItem } from '../../types/MenuItem';
+import colors from '../../themes/colors';
 
 interface Props {
   route: { params: { item: MenuItem } };
