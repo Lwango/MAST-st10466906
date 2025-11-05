@@ -1,7 +1,7 @@
- export interface MenuItem {
+export interface MenuItem {
   id: string;
   name: string;
   description: string;
-  course: string;
+  course: 'Starters' | 'Mains' | 'Desserts';
   price: number;
 }

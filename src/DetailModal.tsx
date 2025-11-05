@@ -1,44 +1,44 @@
-  import React from 'react';
- import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
- import { MenuItem } from '../types/MenuItem';
- import colors from '../themes/colors';
- 
- interface Props {
-   route: { params: { item: MenuItem } };
-   navigation: any;
- }
- 
- const DetailModal: React.FC<Props> = ({ route, navigation }) => {
-   const { item } = route.params;
- 
-   return (
-     <ImageBackground source={require('../../assets/bg.jpg')} style={styles.bg} resizeMode="cover">
-       <View style={styles.container}>
-         <ScrollView contentContainerStyle={styles.card}>
-           <Text style={styles.name}>{item.name}</Text>
-           <Text style={styles.course}>Course: {item.course}</Text>
-           <Text style={styles.desc}>{item.description}</Text>
-           <Text style={styles.price}>R{item.price.toFixed(2)}</Text>
- 
-           <TouchableOpacity style={styles.closeBtn} onPress={() => navigation.goBack()}>
-             <Text style={styles.closeTxt}>Close</Text>
-           </TouchableOpacity>
-         </ScrollView>
-       </View>
-     </ImageBackground>
-   );
- };
- 
- const styles = StyleSheet.create({
-   bg: { flex: 1 },
-   container: { flex: 1, backgroundColor: colors.modalBackdrop, justifyContent: 'center', padding: 24 },
-   card: { backgroundColor: colors.secondary, borderRadius: 16, padding: 20 },
-   name: { fontSize: 26, fontWeight: 'bold', color: colors.text, marginBottom: 6 },
-   course: { fontSize: 16, color: colors.accent, marginBottom: 10 },
-   desc: { fontSize: 15, lineHeight: 22, marginBottom: 12 },
-   price: { fontSize: 20, fontWeight: '600', color: colors.primary, marginBottom: 20 },
-   closeBtn: { backgroundColor: colors.primary, paddingVertical: 10, borderRadius: 8, alignItems: 'center' },
-   closeTxt: { color: 'white', fontWeight: '600' },
- });
- 
- export default DetailModal;
+// src/screens/MenuScreen.tsx
+import React, { JSX, useEffect, useState } from 'react';
+import { View, Text, ScrollView, Button, StyleSheet } from 'react-native';
+import MenuData from '../data/MenuData';
+import MenuItemCard from '../../components/MenuItemCard';
+import { MenuItem } from '../../types/MenuItem';
+import colors from '../../themes/colors';
+
+type Props = {
+  goHome: () => void;
+};
+
+const MenuScreen: React.FC<Props> = ({ goHome }) => {
+  const [items, setItems] = useState<MenuItem[]>([]);
+  useEffect(() => {
+    const l = (newItems: MenuItem[]) => setItems(newItems);
+    MenuData.subscribe(l);
+    return () => MenuData.unsubscribe(l);
+  }, []);
+
+  // render using a while loop
+  const rendered: JSX.Element[] = [];
+  let i = 0;
+  while (i < items.length) {
+    rendered.push(<MenuItemCard key={items[i].id} item={items[i]} />);
+    i++;
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>All Menu Items</Text>
+      <ScrollView style={{ flex: 1 }}>{rendered.length ? rendered : <Text style={styles.no}>No items yet.</Text>}</ScrollView>
+      <Button title="Back Home" onPress={goHome} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16, backgroundColor: colors.background },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 12, color: colors.text },
+  no: { textAlign: 'center', marginTop: 20 },
+});
+
+export default MenuScreen;

@@ -1,4 +1,4 @@
-// src/screens/HomeScreen.tsx  (new background image only)
+// HomeScreen.tsx – displays menu + average price per course + background image
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -7,24 +7,30 @@ import {
   StyleSheet,
   Dimensions,
   FlatList,
-  ImageBackground, // ← added
+  ImageBackground,
 } from 'react-native';
 import { MenuItem } from '../../types/MenuItem';
+import { averagePerCourse, globalMenu } from '../data/globalMenu';
 
 const { width } = Dimensions.get('window');
 const COL_WIDTH = (width - 48) / 3;
 
-interface Props {
-  navigation: any;
-  route: { params?: { menu?: MenuItem[] } };
-}
+interface Props { navigation: any; }
 
-const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
+const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [items, setItems] = useState<MenuItem[]>([]);
 
+  // read global array directly (no params needed)
   useEffect(() => {
-    if (route.params?.menu) setItems(route.params.menu);
-  }, [route.params?.menu]);
+    setItems(globalMenu); // runs once + whenever we return from Edit/Filter
+  }, []);
+
+  // average price per course (uses for-loop – requirement 1)
+  const averages = {
+    Starters: averagePerCourse('Starters'),
+    Mains: averagePerCourse('Mains'),
+    Desserts: averagePerCourse('Desserts'),
+  };
 
   const grouped = (['Starters', 'Mains', 'Desserts'] as const).map(course => ({
     course,
@@ -33,13 +39,21 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <ImageBackground
-      source={require('../../assets/newBg.jpg')} // ← CHANGE FILE NAME HERE
+      source={require('../../assets/bg.jpg')} // changeable background
       style={styles.bg}
       resizeMode="cover"
     >
       <View style={styles.overlay}>
         <Text style={styles.header}>🍽️  Mbothwe’s Eats</Text>
 
+        {/* average price per course (new requirement) */}
+        <View style={styles.averages}>
+          <Text style={styles.avg}>Starters avg: R{averages.Starters.toFixed(2)}</Text>
+          <Text style={styles.avg}>Mains avg: R{averages.Mains.toFixed(2)}</Text>
+          <Text style={styles.avg}>Desserts avg: R{averages.Desserts.toFixed(2)}</Text>
+        </View>
+
+        {/* 3-column menu */}
         <View style={styles.colsWrapper}>
           {grouped.map(g => (
             <View key={g.course} style={styles.col}>
@@ -62,7 +76,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           ))}
         </View>
 
-        <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('AddMenu')}>
+        <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('EditMenu')}>
           <Text style={styles.fabText}>+</Text>
         </TouchableOpacity>
       </View>
@@ -74,6 +88,8 @@ const styles = StyleSheet.create({
   bg: { flex: 1, width: '100%', height: '100%' },
   overlay: { flex: 1, backgroundColor: 'rgba(255,248,240,0.85)', paddingTop: 60 },
   header: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 16 },
+  averages: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 },
+  avg: { fontSize: 14, color: '#333', fontWeight: '600' },
   colsWrapper: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16 },
   col: { width: COL_WIDTH },
   colHeader: { fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8 },
