@@ -9,7 +9,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { MenuItem } from '../../types/MenuItem';
+import { MenuItem } from '../types/MenuItem';
 import { addDish, globalMenu } from '../data/globalMenu';
 
 export const EditMenuScreen: React.FC<{ navigation: any }> = ({ navigation }) => {

@@ -1,5 +1,4 @@
-
-// App.tsx – 3-screen navigation: Home, Edit, Filter
+// App.tsx – 3-screen navigation: Home, EditMenu, Filter
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -26,6 +25,7 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
 {/*  
 Kimia, 2025. Moonshot AI – Kimi Chat. [Online] Available at: https://kimi.moonshot.cn
 [Accessed 20 October 2025].

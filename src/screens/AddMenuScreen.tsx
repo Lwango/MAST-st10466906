@@ -3,8 +3,8 @@ import React, { JSX, useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import MenuData from '../data/MenuData';
-import colors from '../../themes/colors';
-import { MenuItem } from '../../types/MenuItem';
+import colors from '../themes/colors';
+import { MenuItem } from '../types/MenuItem';
 
 type Props = {
   goHome: () => void;

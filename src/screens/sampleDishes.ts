@@ -1,4 +1,5 @@
-import { MenuItem } from "../MenuItem";
+// src/screens/SampleDishes.tsx
+import { MenuItem } from '../types/MenuItem';
 
 export const sampleDishes: MenuItem[] = [
   { id: 's1', name: 'Tomato Soup', description: 'Rich tomato & basil', course: 'Starters', price: 45 },

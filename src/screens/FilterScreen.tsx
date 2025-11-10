@@ -1,12 +1,18 @@
-// FilterScreen.tsx – guest can filter menu by course (Starters only, etc.)
+// FilterScreen.tsx – corrected: no typos, uses globalMenu
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-import { MenuItem } from '../../types/MenuItem';
-import { globalMenu } from '../data/globalMenu';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
+import { globalMenu } from '../data/globalMenu'; // ✅ correct import
 
 export const FilterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [filter, setFilter] = useState<'All' | 'Starters' | 'Mains' | 'Desserts'>('All');
 
+  // filter by course (no params – reads global array)
   const filtered = filter === 'All' ? globalMenu : globalMenu.filter(i => i.course === filter);
 
   return (

@@ -1,4 +1,4 @@
-// HomeScreen.tsx – displays menu + average price per course + background image
+// src/screens/HomeScreen.tsx – complete: displays courses + averages when ≥ 2 courses
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -9,7 +9,7 @@ import {
   FlatList,
   ImageBackground,
 } from 'react-native';
-import { MenuItem } from '../../types/MenuItem';
+import { MenuItem } from '../types/MenuItem';
 import { averagePerCourse, globalMenu } from '../data/globalMenu';
 
 const { width } = Dimensions.get('window');
@@ -20,12 +20,14 @@ interface Props { navigation: any; }
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [items, setItems] = useState<MenuItem[]>([]);
 
-  // read global array directly (no params needed)
   useEffect(() => {
-    setItems(globalMenu); // runs once + whenever we return from Edit/Filter
+    setItems(globalMenu); // read global array directly
   }, []);
 
-  // average price per course (uses for-loop – requirement 1)
+  // helper: unique course count
+  const courseCount = new Set(items.map(i => i.course)).size;
+
+  // average per course (only if ≥ 2 courses present)
   const averages = {
     Starters: averagePerCourse('Starters'),
     Mains: averagePerCourse('Mains'),
@@ -46,14 +48,17 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.overlay}>
         <Text style={styles.header}>🍽️  Mbothwe’s Eats</Text>
 
-        {/* average price per course (new requirement) */}
-        <View style={styles.averages}>
-          <Text style={styles.avg}>Starters avg: R{averages.Starters.toFixed(2)}</Text>
-          <Text style={styles.avg}>Mains avg: R{averages.Mains.toFixed(2)}</Text>
-          <Text style={styles.avg}>Desserts avg: R{averages.Desserts.toFixed(2)}</Text>
-        </View>
+        {/* average prices only if ≥ 2 courses present */}
+        {courseCount >= 2 && (
+          <View style={styles.averages}>
+            <Text style={styles.avgTitle}>Average Prices</Text>
+            <Text style={styles.avg}>Starters: R{averages.Starters.toFixed(2)}</Text>
+            <Text style={styles.avg}>Mains: R{averages.Mains.toFixed(2)}</Text>
+            <Text style={styles.avg}>Desserts: R{averages.Desserts.toFixed(2)}</Text>
+          </View>
+        )}
 
-        {/* 3-column menu */}
+        {/* 3-column menu (courses always visible) */}
         <View style={styles.colsWrapper}>
           {grouped.map(g => (
             <View key={g.course} style={styles.col}>
@@ -88,8 +93,9 @@ const styles = StyleSheet.create({
   bg: { flex: 1, width: '100%', height: '100%' },
   overlay: { flex: 1, backgroundColor: 'rgba(255,248,240,0.85)', paddingTop: 60 },
   header: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 16 },
-  averages: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 },
-  avg: { fontSize: 14, color: '#333', fontWeight: '600' },
+  averages: { backgroundColor: 'rgba(229,57,70,0.9)', padding: 10, borderRadius: 8, marginBottom: 10, alignSelf: 'center' },
+  avgTitle: { fontSize: 16, color: '#fff', fontWeight: 'bold', textAlign: 'center', marginBottom: 4 },
+  avg: { fontSize: 14, color: '#fff', textAlign: 'center' },
   colsWrapper: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16 },
   col: { width: COL_WIDTH },
   colHeader: { fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8 },

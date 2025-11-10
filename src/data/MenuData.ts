@@ -1,5 +1,5 @@
 // src/data/MenuData.ts
-import { MenuItem } from '../../types/MenuItem';
+import { MenuItem } from '../types/MenuItem';
 
 /**
  * Simple global data store for menu items.

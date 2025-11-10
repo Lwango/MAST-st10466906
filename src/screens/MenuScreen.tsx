@@ -1,10 +1,10 @@
 // src/screens/MenuScreen.tsx
-import React, { JSX, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, Button, StyleSheet } from 'react-native';
-import MenuData from '../data/MenuData';
-import MenuItemCard from '../../components/MenuItemCard';
-import { MenuItem } from '../../types/MenuItem';
-import colors from '../../themes/colors';
+import MenuData from '../data/MenuData'; // ✅ Make sure this file exists!
+import { MenuItemCard } from '../components/MenuItemCard'; // ✅ Named import
+import { MenuItem } from '../types/MenuItem';
+import colors from '../themes/colors';
 
 type Props = {
   goHome: () => void;
@@ -12,14 +12,14 @@ type Props = {
 
 const MenuScreen: React.FC<Props> = ({ goHome }) => {
   const [items, setItems] = useState<MenuItem[]>([]);
+
   useEffect(() => {
-    const l = (newItems: MenuItem[]) => setItems(newItems);
-    MenuData.subscribe(l);
-    return () => MenuData.unsubscribe(l);
+    const listener = (newItems: MenuItem[]) => setItems(newItems);
+    MenuData.subscribe(listener);
+    return () => MenuData.unsubscribe(listener);
   }, []);
 
-  // render using a while loop
-  const rendered: JSX.Element[] = [];
+  const rendered = [];
   let i = 0;
   while (i < items.length) {
     rendered.push(<MenuItemCard key={items[i].id} item={items[i]} />);
@@ -29,7 +29,9 @@ const MenuScreen: React.FC<Props> = ({ goHome }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>All Menu Items</Text>
-      <ScrollView style={{ flex: 1 }}>{rendered.length ? rendered : <Text style={styles.no}>No items yet.</Text>}</ScrollView>
+      <ScrollView style={{ flex: 1 }}>
+        {rendered.length > 0 ? rendered : <Text style={styles.no}>No items yet.</Text>}
+      </ScrollView>
       <Button title="Back Home" onPress={goHome} />
     </View>
   );
@@ -38,7 +40,7 @@ const MenuScreen: React.FC<Props> = ({ goHome }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: colors.background },
   title: { fontSize: 22, fontWeight: 'bold', marginBottom: 12, color: colors.text },
-  no: { textAlign: 'center', marginTop: 20 },
+  no: { textAlign: 'center', marginTop: 20, color: colors.text },
 });
 
 export default MenuScreen;

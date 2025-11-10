@@ -1,5 +1,5 @@
-// src/data/globalMenu.ts  – global array + functions (loops & arrays)
-import { MenuItem } from '../../types/MenuItem';
+// globalMenu.ts – global array + functions (loops & arrays)
+import { MenuItem } from '../types/MenuItem';
 
 export let globalMenu: MenuItem[] = [];
 
