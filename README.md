@@ -1,4 +1,3 @@
-```
 # ST10466906 – React Native Restaurant Menu App
 
 ## Overview
@@ -17,17 +16,22 @@ cd MAST-st10466906
 npm install
 npx expo start
 ```
-Scan QR with Expo Go or press `w` for web.
+Scan the QR code with Expo Go or press `w` for web.
 
-Change background: drop image into `assets/` and update line 21 in `src/screens/HomeScreen.tsx`.
+Change background: drop an image into `assets/` and update line 21 in `src/screens/HomeScreen.tsx`.
 
 ## User Flow
 1. Home → 3-column menu with counts  
 2. Tap “+” → AddMenuScreen  
 3. Tap sample dishes (red = selected)  
-4. Fill custom form → course buttons → “Add to Menu”  
-5. “Missing info” banner if custom fields empty  
-6. Auto back to Home → new dish appears instantly
+4. Fill custom form → choose course → “Add to Menu”  
+5. “Missing info” banner appears if custom fields are empty  
+6. After adding, the app auto-navigates to Home and the new dish appears instantly
+
+## Demo & Code
+**YouTube short (60 s):** https://youtube.com/shorts/56xS7xjAS8k?si=gBnA7xVnJIulGpLD  
+**Updated video:** https://youtube.com/shorts/qgZYnhRkQ2A?si=ijhODtebOeG-lK1u  
+**GitHub repository:** https://github.com/Lwango/MAST-st10466906.git
 
 ## Key Files
 ```
@@ -45,15 +49,28 @@ App.tsx                           // navigation stack
 - Expo CLI  
 - React Navigation  
 
-## Demo & Code
-**YouTube short (60 s):** https://youtube.com/shorts/56xS7xjAS8k?si=gBnA7xVnJIulGpLD  
-**GitHub repository:** https://github.com/Lwango/MAST-st10466906.git
-
 ## References (Harvard)
-Kimia, 2025. Moonshot AI – Kimi Chat. [Online] Available at: https://kimi.moonshot.cn [Accessed 20 October 2025].  
-Google LLC, 2025. Google Search. [Online] Available at: https://www.google.com [Accessed 13 October 2025].  
-YouTube, 2025. React Native Tutorials. [Online] Available at: https://youtube.com/shorts/56xS7xjAS8k?si=gBnA7xVnJIulGpLD [Accessed 20 October 2025].  
-Burger King Corporation, 2025. Menu & Nutritional Information. [Online] Available at: https://www.burgerking.com [Accessed 10 October 2025].
+Kimia, 2025. Moonshot AI – Kimi Chat. [Online] Available at: https://kimi.moonshot.cn  
+[Accessed 20 October 2025].
+
+Google LLC, 2025. Google Search. [Online] Available at: https://www.google.com  
+[Accessed 13 October 2025].
+
+YouTube, 2025. React Native Tutorials. [Online] Available at: https://www.youtube.com  
+[Accessed 20 October 2025].
+
+Burger King Corporation, 2025. Menu & Nutritional Information. [Online] Available at:  
+https://www.burgerking.com  
+[Accessed 10 October 2025].
+
+McDonald’s Corporation, 2025. Official Menu & Nutrition Guide. [Online] Available at:  
+https://www.mcdonalds.com  
+[Accessed 15 October 2025].
+
+Hungry Lion (Pty) Ltd, 2025. Menu and Promotions. [Online] Available at:  
+https://www.hungrylion.co.za  
+[Accessed 15 October 2025].
+
+---
 
 End of README – ST10466906
-```
