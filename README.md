@@ -69,7 +69,7 @@ https://www.mcdonalds.com
 
 Hungry Lion (Pty) Ltd, 2025. Menu and Promotions. [Online] Available at:  
 https://www.hungrylion.co.za  
-[Accessed 15 October 2025].
+[Accessed 10 October 2025].
 
 ---
 
