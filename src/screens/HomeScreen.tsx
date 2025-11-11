@@ -1,110 +1,142 @@
-// src/screens/HomeScreen.tsx – complete: displays courses + averages when ≥ 2 courses
+// src/screens/HomeScreen.tsx
 import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
-  FlatList,
-  ImageBackground,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { getMenuItems } from '../data/MenuData';
+import colors from '../themes/colors';
 import { MenuItem } from '../types/MenuItem';
-import { averagePerCourse, globalMenu } from '../data/globalMenu';
+import { RootStackParamList } from '../types/NavigationTypes';
 
-const { width } = Dimensions.get('window');
-const COL_WIDTH = (width - 48) / 3;
+type NavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
-interface Props { navigation: any; }
-
-const HomeScreen: React.FC<Props> = ({ navigation }) => {
+const HomeScreen = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [items, setItems] = useState<MenuItem[]>([]);
 
   useEffect(() => {
-    setItems(globalMenu); // read global array directly
+    setItems(getMenuItems());
   }, []);
 
-  // helper: unique course count
-  const courseCount = new Set(items.map(i => i.course)).size;
+  const starters = items.filter(item => item.course === 'Starters').length;
+  const mains = items.filter(item => item.course === 'Mains').length;
+  const desserts = items.filter(item => item.course === 'Desserts').length;
 
-  // average per course (only if ≥ 2 courses present)
-  const averages = {
-    Starters: averagePerCourse('Starters'),
-    Mains: averagePerCourse('Mains'),
-    Desserts: averagePerCourse('Desserts'),
-  };
-
-  const grouped = (['Starters', 'Mains', 'Desserts'] as const).map(course => ({
-    course,
-    dishes: items.filter(i => i.course === course),
-  }));
+  const avg = items.length
+    ? (items.reduce((sum, item) => sum + item.price, 0) / items.length).toFixed(2)
+    : '0.00';
 
   return (
-    <ImageBackground
-      source={require('../../assets/bg.jpg')} // changeable background
-      style={styles.bg}
-      resizeMode="cover"
-    >
-      <View style={styles.overlay}>
-        <Text style={styles.header}>🍽️  Mbothwe’s Eats</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Mbothwe’s Eats</Text>
 
-        {/* average prices only if ≥ 2 courses present */}
-        {courseCount >= 2 && (
-          <View style={styles.averages}>
-            <Text style={styles.avgTitle}>Average Prices</Text>
-            <Text style={styles.avg}>Starters: R{averages.Starters.toFixed(2)}</Text>
-            <Text style={styles.avg}>Mains: R{averages.Mains.toFixed(2)}</Text>
-            <Text style={styles.avg}>Desserts: R{averages.Desserts.toFixed(2)}</Text>
-          </View>
-        )}
-
-        {/* 3-column menu (courses always visible) */}
-        <View style={styles.colsWrapper}>
-          {grouped.map(g => (
-            <View key={g.course} style={styles.col}>
-              <Text style={styles.colHeader}>{g.course} ({g.dishes.length})</Text>
-              <FlatList
-                data={g.dishes}
-                keyExtractor={i => i.id}
-                renderItem={({ item }) => (
-                  <View style={styles.card}>
-                    <Text style={styles.dishName}>{item.name}</Text>
-                    <Text style={styles.dishDesc}>{item.description}</Text>
-                    <Text style={styles.dishPrice}>R{item.price.toFixed(2)}</Text>
-                  </View>
-                )}
-                scrollEnabled={false}
-                ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
-                ListFooterComponent={<View style={{ height: 70 }} />}
-              />
-            </View>
-          ))}
-        </View>
-
-        <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('EditMenu')}>
-          <Text style={styles.fabText}>+</Text>
+      {/* ✅ Fixed Layout: Flex 1 + textAlign center */}
+      <View style={styles.countRow}>
+        <TouchableOpacity
+          style={[styles.countBox, { flex: 1 }]}
+          onPress={() => navigation.navigate('Filter', { course: 'Starters' })}
+        >
+          <Text style={styles.count}>Starters ({starters})</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.countBox, { flex: 1 }]}
+          onPress={() => navigation.navigate('Filter', { course: 'Mains' })}
+        >
+          <Text style={styles.count}>Mains ({mains})</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.countBox, { flex: 1 }]}
+          onPress={() => navigation.navigate('Filter', { course: 'Desserts' })}
+        >
+          <Text style={styles.count}>Desserts ({desserts})</Text>
         </TouchableOpacity>
       </View>
-    </ImageBackground>
+
+      <Text style={styles.average}>Average Price: R{avg}</Text>
+
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate('AddMenu')}
+      >
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  bg: { flex: 1, width: '100%', height: '100%' },
-  overlay: { flex: 1, backgroundColor: 'rgba(255,248,240,0.85)', paddingTop: 60 },
-  header: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 16 },
-  averages: { backgroundColor: 'rgba(229,57,70,0.9)', padding: 10, borderRadius: 8, marginBottom: 10, alignSelf: 'center' },
-  avgTitle: { fontSize: 16, color: '#fff', fontWeight: 'bold', textAlign: 'center', marginBottom: 4 },
-  avg: { fontSize: 14, color: '#fff', textAlign: 'center' },
-  colsWrapper: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16 },
-  col: { width: COL_WIDTH },
-  colHeader: { fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8 },
-  card: { backgroundColor: '#fff', padding: 12, borderRadius: 8, elevation: 2 },
-  dishName: { fontSize: 14, fontWeight: '600' },
-  dishDesc: { fontSize: 13, color: '#555', marginVertical: 4 },
-  dishPrice: { fontSize: 13, fontWeight: 'bold' },
-  fab: { position: 'absolute', right: 24, bottom: 24, width: 56, height: 56, borderRadius: 28, backgroundColor: '#E63946', justifyContent: 'center', alignItems: 'center', elevation: 8 },
-  fabText: { color: '#fff', fontSize: 24, fontWeight: 'bold' },
+  container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    color: colors.text,
+    textAlign: 'center',
+  },
+  countRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // ✅ Better than space-around for even spacing
+    width: '100%',
+    marginBottom: 30,
+  },
+  countBox: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    alignItems: 'center', // ✅ Center content
+  },
+  count: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.primary,
+    textAlign: 'center', // ✅ Ensure text doesn't overflow
+  },
+  average: {
+    fontSize: 18,
+    color: colors.text,
+    marginBottom: 40,
+    textAlign: 'center',
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 40,
+    right: 40,
+    width: 65,
+    height: 65,
+    borderRadius: 32,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  addButtonText: {
+    fontSize: 32,
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });
 
 export default HomeScreen;

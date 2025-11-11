@@ -1,60 +1,41 @@
 // src/data/MenuData.ts
 import { MenuItem } from '../types/MenuItem';
 
-/**
- * Simple global data store for menu items.
- * Provides:
- *  - getAll()
- *  - add(item)
- *  - remove(id)
- *  - subscribe(fn) / unsubscribe(fn)
- *
- * Uses in-memory array (will not persist after app restart).
- */
-
-type Listener = (items: MenuItem[]) => void;
-
-const items: MenuItem[] = [];
-
-// simple id generator (no external uuid dependency)
-const genId = () => `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-
-const listeners = new Set<Listener>();
-
-export default {
-  getAll(): MenuItem[] {
-    return [...items];
+const initialItems: MenuItem[] = [
+  {
+    id: '1',
+    name: 'Caesar Salad',
+    description: 'Crisp romaine, parmesan, croutons, caesar dressing',
+    price: 8.5,
+    course: 'Starters',
   },
-
-  add(item: Omit<MenuItem, 'id'>): MenuItem {
-    const newItem: MenuItem = { id: genId(), ...item };
-    items.push(newItem);
-    listeners.forEach((l) => l([...items]));
-    return newItem;
+  {
+    id: '2',
+    name: 'Beef Burger',
+    description: 'Juicy beef patty with lettuce, tomato, and special sauce',
+    price: 15.99,
+    course: 'Mains',
   },
-
-  remove(id: string) {
-    const idx = items.findIndex((i) => i.id === id);
-    if (idx >= 0) {
-      items.splice(idx, 1);
-      listeners.forEach((l) => l([...items]));
-      return true;
-    }
-    return false;
+  {
+    id: '3',
+    name: 'Chocolate Lava Cake',
+    description: 'Warm chocolate cake with molten center and vanilla ice cream',
+    price: 9.99,
+    course: 'Desserts',
   },
+];
 
-  clear() {
-    items.length = 0;
-    listeners.forEach((l) => l([...items]));
-  },
+export const MenuData: MenuItem[] = [...initialItems];
 
-  subscribe(fn: Listener) {
-    listeners.add(fn);
-    // send current state immediately
-    fn([...items]);
-  },
-
-  unsubscribe(fn: Listener) {
-    listeners.delete(fn);
-  },
+export const addMenuItem = (item: MenuItem) => {
+  MenuData.push(item);
 };
+
+export const removeMenuItem = (id: string) => {
+  const index = MenuData.findIndex(item => item.id === id);
+  if (index !== -1) {
+    MenuData.splice(index, 1);
+  }
+};
+
+export const getMenuItems = (): MenuItem[] => [...MenuData];

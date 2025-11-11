@@ -1,72 +1,119 @@
-// FilterScreen.tsx – corrected: no typos, uses globalMenu
-import React, { useState } from 'react';
+// src/screens/FilterScreen.tsx
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  ScrollView,
+  Button,
   StyleSheet,
-  FlatList,
+  Alert,
 } from 'react-native';
-import { globalMenu } from '../data/globalMenu'; // ✅ correct import
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { getMenuItems, removeMenuItem } from '../data/MenuData';
+import colors from '../themes/colors';
+import { MenuItem } from '../types/MenuItem';
+import { RootStackParamList } from '../types/NavigationTypes';
 
-export const FilterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const [filter, setFilter] = useState<'All' | 'Starters' | 'Mains' | 'Desserts'>('All');
+type Props = {
+  route: RouteProp<RootStackParamList, 'Filter'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Filter'>;
+};
 
-  // filter by course (no params – reads global array)
-  const filtered = filter === 'All' ? globalMenu : globalMenu.filter(i => i.course === filter);
+const FilterScreen: React.FC<Props> = ({ route, navigation }) => {
+  const [items, setItems] = useState<MenuItem[]>([]);
+  const course = route.params?.course || null;
+
+  useEffect(() => {
+    const all = getMenuItems();
+    if (course) {
+      setItems(all.filter(item => item.course === course));
+    } else {
+      setItems(all);
+    }
+  }, [course]);
+
+  const handleRemove = (id: string) => {
+    removeMenuItem(id);
+    setItems(getMenuItems().filter(item => item.course === course));
+  };
+
+  const avg =
+    items.length > 0
+      ? (items.reduce((sum, item) => sum + item.price, 0) / items.length).toFixed(2)
+      : '0.00';
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Filter Menu</Text>
+      <Text style={styles.title}>
+        {course ? `${course} Dishes` : 'All Dishes'}
+      </Text>
+      <Text style={styles.average}>Average: R{avg}</Text>
 
-      {/* filter buttons */}
-      <View style={styles.filterRow}>
-        {(['All', 'Starters', 'Mains', 'Desserts'] as const).map(c => (
-          <TouchableOpacity
-            key={c}
-            style={[styles.filterBtn, filter === c && styles.activeFilter]}
-            onPress={() => setFilter(c)}
-          >
-            <Text style={[styles.filterTxt, filter === c && styles.activeFilterTxt]}>{c}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* filtered list */}
-      <FlatList
-        data={filtered}
-        keyExtractor={i => i.id}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.desc}>{item.description}</Text>
-            <Text style={styles.price}>R{item.price.toFixed(2)}</Text>
+      <ScrollView style={{ flex: 1 }}>
+        {items.map((item) => (
+          <View key={item.id} style={styles.card}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.desc}>{item.description}</Text>
+              <Text style={styles.price}>R{item.price.toFixed(2)}</Text>
+            </View>
+            <Button title="Remove" color="#dc3545" onPress={() => handleRemove(item.id)} />
           </View>
-        )}
-        ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
-      />
+        ))}
+      </ScrollView>
 
-      <TouchableOpacity style={styles.backBtn} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.backBtnTxt}>←  Back to Home</Text>
-      </TouchableOpacity>
+      <Button title="Back to Home" onPress={() => navigation.goBack()} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF8F0', padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
-  filterRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
-  filterBtn: { flex: 1, padding: 10, marginHorizontal: 4, backgroundColor: '#ddd', borderRadius: 8, alignItems: 'center' },
-  activeFilter: { backgroundColor: '#E63946' },
-  filterTxt: { color: '#333', fontWeight: '600' },
-  activeFilterTxt: { color: '#fff' },
-  card: { backgroundColor: '#fff', padding: 12, borderRadius: 8, elevation: 2, marginVertical: 6 },
-  name: { fontSize: 16, fontWeight: '600' },
-  desc: { fontSize: 14, color: '#555', marginVertical: 4 },
-  price: { fontSize: 14, fontWeight: 'bold' },
-  backBtn: { backgroundColor: '#E63946', marginTop: 20, padding: 15, borderRadius: 25, alignItems: 'center' },
-  backBtnTxt: { color: '#fff', fontWeight: 'bold' },
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: colors.background,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+    color: colors.text,
+  },
+  average: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  card: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    backgroundColor: '#fff',
+    padding: 14,
+    borderRadius: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+  name: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
+  desc: {
+    fontSize: 14,
+    color: '#555',
+    marginVertical: 4,
+  },
+  price: {
+    fontSize: 13,
+    fontStyle: 'italic',
+    color: colors.primary,
+  },
 });
 
 export default FilterScreen;

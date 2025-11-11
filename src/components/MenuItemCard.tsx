@@ -1,22 +1,54 @@
-// MenuItemCard.tsx – simple card component
+// src/components/MenuItemCard.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { MenuItem } from '../types/MenuItem';
 import colors from '../themes/colors';
 
-interface Props { item: MenuItem; }
+type Props = {
+  item: {
+    name: string;
+    description: string;
+    price: number;
+    course: string;
+  };
+};
 
-export const MenuItemCard: React.FC<Props> = ({ item }) => (
-  <View style={styles.card}>
-    <Text style={styles.name}>{item.name}</Text>
-    <Text style={styles.desc}>{item.description}</Text>
-    <Text style={styles.price}>R{item.price.toFixed(2)}</Text>
-  </View>
-);
+const MenuItemCard: React.FC<Props> = ({ item }) => {
+  return (
+    <View style={styles.card}>
+      <Text style={styles.name}>{item.name}</Text>
+      <Text style={styles.desc}>{item.description}</Text>
+      <Text style={styles.price}>R{item.price.toFixed(2)} • {item.course}</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: '#fff', padding: 12, marginVertical: 6, borderRadius: 8, elevation: 2 },
-  name: { fontSize: 16, fontWeight: '600' },
-  desc: { fontSize: 14, color: '#555', marginVertical: 4 },
-  price: { fontSize: 14, fontWeight: 'bold' },
+  card: {
+    padding: 16,
+    marginVertical: 8,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
+  desc: {
+    fontSize: 14,
+    color: '#555',
+    marginVertical: 6,
+  },
+  price: {
+    fontSize: 13,
+    fontStyle: 'italic',
+    color: colors.primary,
+  },
 });
+
+export { MenuItemCard };
