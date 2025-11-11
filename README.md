@@ -65,7 +65,7 @@ https://www.burgerking.com
 
 McDonald’s Corporation, 2025. Official Menu & Nutrition Guide. [Online] Available at:  
 https://www.mcdonalds.com  
-[Accessed 15 October 2025].
+[Accessed 9 October 2025].
 
 Hungry Lion (Pty) Ltd, 2025. Menu and Promotions. [Online] Available at:  
 https://www.hungrylion.co.za  
